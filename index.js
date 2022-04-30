@@ -1,18 +1,7 @@
 const { ApolloServer, gql } = require("apollo-server");
-
-// Construct a schema, using GraphQL schema language
-const typeDefs = gql`
-  type Query {
-    hello: String
-  }
-`;
-
-// Provide resolver functions for your schema fields
-const resolvers = {
-  Query: {
-    hello: (root, args, context) => "Hello world!"
-  }
-};
+const resolvers = require("./resolvers");
+const typeDefs = require("./schema");
+const db = require("./models");
 
 const server = new ApolloServer({
   typeDefs,
@@ -21,4 +10,10 @@ const server = new ApolloServer({
 
 server.listen().then(({ url }) => {
   console.log(`🚀 Server ready at ${url}`);
+  try {
+    db.sequelize.authenticate();
+    console.log("Connection has been established successfully.");
+  } catch (error) {
+    console.error("Unable to connect to the database:", error);
+  }
 });
