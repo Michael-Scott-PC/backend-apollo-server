@@ -8,12 +8,16 @@ const resolvers = {
   Mutation: {
     async createLink(
       root,
-      { url = "https://localhost:3000/", slug },
+      { url = "https://localhost:3000", slug },
       { models }
     ) {
+      const randomSlug = Buffer.from(Math.random().toString())
+        .toString("base64")
+        .substr(10, 4)
+        .toLowerCase();
       return models.Link.create({
         url,
-        slug
+        slug: slug ? slug : randomSlug
       });
     }
   }
